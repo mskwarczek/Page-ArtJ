@@ -1,0 +1,476 @@
+// Variables
+$margin-container: 100px 50px 0;
+$color-primary: #000;
+$color-secondary: #fff;
+$color-special: #485460;
+$color-overlay: rgba(0, 0, 0, 0.8);
+
+$phone-width: 768px;
+$tablet-width: 1200px;
+
+// Mixins
+@mixin phone {
+	@media (max-width: #{$phone-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media (max-width: #{$tablet-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin position-absolute-lt ($horizontal, $vertical) {
+	position: absolute;
+	left: $horizontal;
+	top: $vertical;
+	transform: translate(- $horizontal, - $vertical);
+	white-space: nowrap;
+}
+
+@mixin square ($size) {
+    width: $size;
+    height: $size;
+}
+
+/* === GLOBAL === */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+
+    h1 {
+        font-size: 36px;
+        text-align: center;
+        text-transform: uppercase;
+        margin: 10px;
+    }
+
+    h2 {
+        font-size: 30px;
+        margin: 10px;
+    }
+
+    h3 {
+        font-size: 24px;
+        margin: 10px;
+    }
+
+    p {
+        font-size: 20px;
+        margin: 10px;
+    }
+
+    li {
+        font-size: 20px;
+    }
+
+    a {
+        color: $color-primary;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .controls {
+        font-size: 50px;
+        font-weight: bold;
+    }
+
+    .container {
+        margin: $margin-container;
+        width: 100%;
+        place-self: center;
+    }
+
+    .section-header {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        margin: 30px auto;
+    }
+
+    .section-header::before,
+    .section-header:after {
+        content: "";
+        flex: 1;
+        background: $color-special;
+        height: 5px;
+        width: 100%;
+        margin: 10px;
+    }
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 10% 1fr 1fr 10%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "header header nav nav"
+        "carousel carousel carousel carousel"
+        ". about-me about-me ."
+        ". services services ."
+        ". gallery gallery ."
+        ". contact contact ."
+        "footer footer footer footer";
+    justify-items: stretch;
+    align-items: stretch;
+    @include tablet {
+        grid-template-columns: 5% 1fr 5%;
+        grid-template-areas:
+            ". header ."
+            ". nav ."
+            "carousel carousel carousel"
+            ". about-me ."
+            ". services ."
+            ". gallery ."
+            ". contact ."
+            "footer footer footer";
+    }
+
+/* === HEADER === */
+    header {
+        grid-area: header;
+        text-align: center;
+
+        h1 {
+            text-decoration: underline;
+        }
+    }
+
+/* === NAVIGATION === */
+    nav {
+        grid-area: nav;
+        align-self: center;
+        @include tablet {
+            border-top: 5px solid $color-special;
+            padding: 10px 0;
+        }
+
+        ul {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-evenly;
+            align-items: center;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                display: block;
+                margin: 5px;
+                border-bottom: 5px solid transparent;
+                border-top: 5px solid transparent;
+                border-radius: 10px;
+                transition: 0.6s ease;
+
+                &:hover {
+                    border-bottom: 5px solid $color-special;
+                    border-top: 5px solid $color-special;
+                }
+
+                a {
+                    text-transform: uppercase;
+                    font-size: 30px;
+                    padding: 10px 20px;
+
+                    &:hover {
+                        color: $color-special;
+                    }
+                }
+            }
+        }
+    }
+
+/* === CAROUSEL === */
+    .carousel {
+        grid-area: carousel;
+        position: relative;
+        height: 80vh;
+
+        .carousel-slide {
+            background-size: cover;
+            background-position: center;
+            background-repeat: none;
+            display: none;
+            height: 80vh;
+            width: 100%;
+
+            &.show {
+                display: block;
+            }
+
+            .slogan {
+                @include position-absolute-lt (50%, 10%);
+                text-align: center;
+                height: auto;
+                width: 100%;
+                color: $color-secondary;
+                text-shadow: 5px 5px 5px $color-primary;
+                white-space: normal;
+
+                h1 {
+                    font-size: 60px;
+                    @include phone {
+                        font-size: 40px;
+                    }
+                }
+
+                h2 {
+
+                    @include phone {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+      
+        .prev,
+        .next {
+            @include position-absolute-lt (0, 50%);
+            cursor: pointer;
+            transition: 0.6s ease;
+            height: 100%;
+            width: 10%;
+
+            &:hover {
+                background-color: $color-overlay;
+            }
+
+            a {
+                @include position-absolute-lt (50%, 50%);
+                color: $color-secondary;
+            }
+        }
+
+        .next {
+            @include position-absolute-lt (100%, 50%);
+        }
+
+        .dot-box {
+            @include position-absolute-lt (50%, 100%);
+            padding: 15px;
+
+            .dot {
+                cursor: pointer;
+                @include square (15px);
+                margin: 0 10px;
+                background-color: $color-secondary;
+                border-radius: 50%;
+                display: inline-block;
+                transition: 0.6s ease;
+     
+                &:hover {
+                    background-color: $color-special;
+                }
+
+                &.active {
+                    background-color: $color-special;
+                }
+            }
+        }
+    }
+
+/* === ABOUT ME === */
+    .about-me {
+        grid-area: about-me;
+        text-align: center;
+
+        p {
+            margin: 0 10%;
+        }
+
+        h3 {
+            text-align: right;
+            margin-right: 10%;
+        }
+    }
+
+/* === SERVICES === */
+
+    .services {
+        grid-area: services;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        background-color: $color-special;
+        background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23000000' fill-opacity='0.22'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        border-radius: 30px;
+        color: $color-secondary;
+        padding: 20px;
+
+        .services-box {
+            text-align: center;
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+        }
+
+        .services-header,
+        .additional-info {
+            margin: 30px;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+/* === GALLERY === */
+    .gallery {
+        grid-area: gallery;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+
+        .gallery-header {
+            width: 100%;
+            text-align: center;
+        }
+
+        .full-gallery {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 30px;
+            transition: 0.6s ease;
+
+            &:hover {
+                color: $color-special;
+                border: 1px solid $color-special;
+            }
+        }
+
+        .photo-box {
+            @include square (18vw);
+            border: 1px solid $color-primary;
+            border-radius: 20px;
+            margin: 1%;
+            overflow: hidden;
+            position: relative;
+            display: none;
+            transition: opacity 0.6s ease;
+            @include tablet {
+                @include square (25vw);
+            }
+            @include phone {
+                @include square (40vw);
+            }
+
+            &.show {
+                display: block;
+            }
+
+            &.show-full {
+                display: block;
+            }
+
+            &:hover {
+                box-shadow: 0 0 10px $color-primary;
+                opacity: 0.6;
+            }
+
+            .gallery-img {
+                position: relative;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                max-height: 100%;
+                display: block;
+            }
+
+            .high {
+                max-height: none;
+                max-width: 100%;
+            }
+        }
+
+        .gallery-modal {
+            @include square (100%);
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            background-color: $color-overlay;
+            
+            &.show {
+                display: block;
+            }
+
+            .modal-content {
+                @include position-absolute-lt (50%, 50%);
+                @include square (90%);
+                
+                .modal-image {
+                    @include position-absolute-lt (50%, 50%);
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+
+                .prev-image,
+                .next-image {
+                    @include position-absolute-lt (0, 50%);
+                    cursor: pointer;
+                    transition: 0.6s ease;
+                    height: 100%;
+                    width: 50%;
+
+                    &:hover a {
+                        display: block;
+                    }
+
+                    a {
+                        @include position-absolute-lt (30%, 50%);
+                        display: none;
+                        color: $color-secondary;
+                    }
+                }
+         
+                .next-image {
+                    @include position-absolute-lt (100%, 50%);
+
+                    a {
+                        @include position-absolute-lt (70%, 50%);
+                    }
+                }
+
+                .close-modal {
+                    @include position-absolute-lt (100%, 0);
+                    z-index: 2;
+                    color: $color-secondary;
+
+                    &:hover {
+                        color: $color-special;
+                    }
+                }
+            }
+        }
+    }
+
+/* === CONTACT === */
+    .contact {
+        grid-area: contact;
+        text-align: center;
+
+        .map {
+            margin-top: 50px;
+            width: 100%;
+            height: 40vh;
+        }
+    }
+
+/* === FOOTER === */
+    footer {
+        grid-area: footer;
+        background-color: $color-special;
+        color: $color-secondary;
+        text-align: center;
+        margin-top: 80px;
+    }
+}
